@@ -1,50 +1,45 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import ItemList from "./ItemList"
-import productos from "../../db/items" //Array de mis productos(api)
 import Spiner from '../Spinner/Spinner'
+import { getFirestore } from '../../service/fireBaseConfig.js'
 
 
-//LLamo a la api items
-const getItems = new Promise((res, rej) => {
-
-    const condition = true;
-    if (condition) {
-        setTimeout(() => {
-            res(productos)
-        }, 2000)
-    } else {
-        rej('404 Not found')
-    }
-
-})
 
 const ItemListContainer = () => {
-    const [items, setItems] = useState([])
-    const [loading, setLoading] = useState(true)  
     
-    const { id } = useParams();
+    const [items, setItems] = useState([])
 
-   
+    const [loading, setLoading] = useState(true)  
+
+    const { categoryId } = useParams();
+
+
     useEffect(() => {
-        if (id) {
-            getItems
-                .then(res => setItems(res.filter(prod => prod.estado === id)))
+        const bdQuery = getFirestore() // Traer todo
+        
+
+        if (categoryId ===  undefined) {
+            bdQuery.collection('items').get()
+                .then(data => setItems(data.docs.map(i => ({ id: i.id, ...i.data() }))))
                 .catch(err => console.log(err))
                 .finally(() => setLoading(false))
         } else {
-             getItems
-                 .then(res => setItems(res))
-                 .catch(err => console.log(err))
-                 .finally(() => setLoading(false))
-            
+            bdQuery.collection('items').where('categoryId', '==',  categoryId ).get()
+                .then(data => setItems(data.docs.map(i => ({ id: i.id, ...i.data() }))))
+                .catch(err => console.log(err))
+                .finally(() => setLoading(false))
+
         }
+      
+      
+
+    }, [categoryId])
+
+
+    console.log(items)
 
        
-    },[id] )
-   
-       
-   
    
 
     return (

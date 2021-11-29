@@ -11,3 +11,19 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.deletBtn:hover{
+   cursor:pointer
+}
+
+.emptyCard{
+  
+  width: 50%;
+  height: 50%;
+  
+}
+
+.td{
+  max-width: 100px;
+  
+}
