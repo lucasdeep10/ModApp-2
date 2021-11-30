@@ -1,14 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useCartContext} from '../../context/CartContext';
-import '../../index.css'
 import { useState } from 'react'
 
 import { CartEmpty } from './CartEmpty'
 import firebase from 'firebase'
-import { getFirestore } from '../../service/fireBaseConfig'
 import CompraFinalizada from '../CompraFinalizada/CompraFinalizada'
-import Spiner from '../Spinner/Spinner'
-import { bottom } from '@popperjs/core';
+import postOrder from '../../Gets/orden'
 
 export const Cart = () => {
     const [orderId, setOrderId] = useState(null)
@@ -25,7 +22,6 @@ export const Cart = () => {
 
         const order = {}
 
-
         order.buyer = { name, email, tel } //formData
         order.total = totalPrice()
         order.date = firebase.firestore.Timestamp.fromDate(new Date())
@@ -38,45 +34,9 @@ export const Cart = () => {
 
 
 
-        const dbQ = getFirestore()
-        const orders = dbQ.collection('orders')
+        const post = postOrder(order, setOrderId, cartList)
+        };
 
-        //* "Orders" en donde se ira guardando cada orden de compra
-        orders.add(order)
-        //* Guardarlo como estado
-            .then((res) => {
-                setOrderId(res.id) //No me actualiza el valor de orderID
-
-            })
-            .catch(err => console.log(err))
-
-
-        //*Refresca todos los items que estan en Cart del cartContext
-        const itemsToUpdate = dbQ.collection('items').where(firebase.firestore.FieldPath.documentId(), 'in', cartList.map(i => i.id))
-
-
-        const batch = dbQ.batch();
-
-
-        //*Restar del stock la cantidad de el carrito
-        itemsToUpdate.get()
-            .then(collection => {
-                collection.docs.forEach(docSnapshot => {
-                    batch.update(docSnapshot.ref, {
-                        stock: docSnapshot.data().stock - cartList.find(item => item.id === docSnapshot.id).cantidad
-                    })
-                })
-                batch.commit().then(res => {
-
-                    console.log(`Stock actualizado`)
-                })
-
-            })
-
-        console.log(order)
-    }
-
-        
     //*Borrar el carrito de compra
     const handleHide = () => {
         setShowModal(false)
@@ -98,6 +58,7 @@ export const Cart = () => {
                                 <th scope="col" key={item.id}>Producto</th>
                                 <th scope="col">Marca</th>
                                 <th scope="col">Cantidad</th>
+                                <th scope="col">Talle</th>
                                 <th scope="col">Precio</th>
                                 <th scope="col">Sub total</th>
                                 <th scope="col">
@@ -110,8 +71,9 @@ export const Cart = () => {
                                     <th scope="row">{item.title} </th>
                                     <td>{item.autor}</td>
                                     <td>{item.stock}</td>
+                                    <td>{item.talle}</td>
                                     <td>${item.price}</td>
-                                    <td>${item.price * item.cantidad}</td>
+                                    <td>${item.price * item.stock}</td>
                             </tr>
                         </tbody>
                         </table>
@@ -127,7 +89,7 @@ export const Cart = () => {
                                 <h4 className="card-title">Comprar Carrito</h4>
                                 <h6 className="card-subtitle mb-2 text-muted">Cantidad de productos: {cantItem()} </h6>
                                 <p className="card-text">Total: {totalPrice()} </p>
-                                <form onSubmit={generarOrden} className="container cartForm"></form>
+                                <form onSubmit={generarOrden} className="container cartForm">
                                     <div class="col-md-6 ">
                                         <label for="nombre" className="form-label">Nombre</label>
                                         <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="form-control" id="nombre" />
@@ -145,7 +107,7 @@ export const Cart = () => {
                                 <Link to='/' className="card-link">
                                     <bottom type="button" className="btn btn-outline-danger mt-2 mt-md-0 ms-md-5 ">Seguir comprando </bottom> 
                                 </Link>
-                    
+                                </form>
                             </div>
                             <CompraFinalizada show={showModal} onHide={handleHide} orderId={orderId} total={totalPrice()} />
                         </div>

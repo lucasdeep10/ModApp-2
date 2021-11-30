@@ -25,7 +25,7 @@ const ItemDetail = ({ item }) => {
             <div className="card mt-2 mb-2 d-md-flex flex-md-row" >
                 <div className="d-flex flex-column justify-content-center" >
                     <h6 className="text-center text-dark mt-3"> {item.autor} </h6>
-                    <img src={item.pictureUrl} className="card-img-top container" style={{ width: "150px", height: "auto" }} alt="img" />
+                    <img src={item.pictureUrl} className="card-img-top container" style={{ width: "250px", height: "auto" }} alt="img" />
                     <div className="card-body d-none d-md-flex flex-column justify-content-center">
 
 
@@ -51,7 +51,7 @@ const ItemDetail = ({ item }) => {
                     <p className="card-text text-dark"> {item.resumen}  </p>
                     <ul className="list-group list-group-flush">
                         <li className="list-group-item text-dark fs-5">Stock disponible: {item.stock} unidades  </li>
-                        <li className="list-group-item text-dark fs-5">Estado: {item.categoryId} </li>
+                        <li className="list-group-item text-dark fs-5">Estado: {item.estado} </li>
                         <li className="list-group-item text-dark fs-5">Precio: ${item.price} </li>
                     </ul>
                     <div className="card-body d-flex d-md-none flex-column justify-content-center">

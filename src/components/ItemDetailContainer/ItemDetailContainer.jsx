@@ -1,8 +1,8 @@
-import { getFirestore } from '../../service/fireBaseConfig'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import Spiner from '../Spinner/Spinner';
 import ItemDetail from './ItemDetail';
+import getItem from '../../Gets/getItem';
 
 
 const ItemDetailContainer = () => {
@@ -12,18 +12,9 @@ const ItemDetailContainer = () => {
     const { id } = useParams()
 
     useEffect(() => {
-       const bdQuery = getFirestore()
-
-       // -- Busca por id y trae un solo elemento --
-       bdQuery.collection('items').doc(id).get()
-            .then(resp => setItem({id: resp.id, ...resp.data() }))
-            .catch(err => console.log(err))
-            .finally(()=> setLoading(false))
-
-    }, [id])
-
-    console.log(id)
-
+        const itemsG = getItem(id, setItem, setLoading)
+        },[id])
+   
     return (
         <div>
 

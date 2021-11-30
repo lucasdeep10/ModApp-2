@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
+
 import ItemList from "./ItemList"
 import Spiner from '../Spinner/Spinner'
-import { getFirestore } from '../../service/fireBaseConfig.js'
+import getItems from '../../Gets/getItems'
 
 
 
@@ -12,35 +13,13 @@ const ItemListContainer = () => {
 
     const [loading, setLoading] = useState(true)  
 
-    const { categoryId } = useParams();
+    const { categoria } = useParams();
 
 
     useEffect(() => {
-        const bdQuery = getFirestore() // Traer todo
-        
-
-        if (categoryId ===  undefined) {
-            bdQuery.collection('items').get()
-                .then(data => setItems(data.docs.map(i => ({ id: i.id, ...i.data() }))))
-                .catch(err => console.log(err))
-                .finally(() => setLoading(false))
-        } else {
-            bdQuery.collection('items').where('categoryId', '==',  categoryId ).get()
-                .then(data => setItems(data.docs.map(i => ({ id: i.id, ...i.data() }))))
-                .catch(err => console.log(err))
-                .finally(() => setLoading(false))
-
-        }
-      
-      
-
-    }, [categoryId])
-
-
-    console.log(items)
-
-       
-   
+        // eslint-disable-next-line no-unused-vars
+        const items = getItems(categoria, setItems, setLoading)
+        },[categoria])
 
     return (
         <div>

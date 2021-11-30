@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 
 
-const Item = ({ id, title, price, pictureUrl, stock }) => {
+const Item = ({ id, title, price, pictureUrl, stock, talle }) => {
     
     return (
 
@@ -15,6 +15,7 @@ const Item = ({ id, title, price, pictureUrl, stock }) => {
                     style={{ width: "250px", height: "auto" }} alt="img" />
                     <ul className="list-group list-group-flush">
                         <li className="list-group-item text-dark"><i>Precio: $ {price} </i></li>
+                        <li className="list-group-item text-dark"><i>Talles: {talle} </i></li>
                         {stock === 0 ? <li className="list-group-item" style={{color:'red'}}>Fuera de stock </li> :
                         <li className="list-group-item " style={{ color: 'green' }}>Stock: {stock} </li>
                     }
